@@ -6,9 +6,6 @@ from linebot.models import ButtonsTemplate, TemplateSendMessage, TextSendMessage
 from linebot.exceptions import LineBotApiError
 
 load_dotenv()
-# DEFAULT_API_ENDPOINT = 'https://api.line.me'
-# DEFAULT_API_DATA_ENDPOINT= 'https://api-data.line.me'
-# channel_access_token = "n9eG76y/jysHQzzHn8QpB5iT79aRxX6ulLdx/ZrKvEnBXtKYOnjVsdlzcd9eavJHf4NQ98kk/Bh4nt/Rsx2KFvYFBH/f+oRABQiwX7tMjL/QI0ZQYKqOMC7vkavSpY3q9x+OPMRFXsRG1QGvelgeKwdB04t89/1O/w1cDnyilFU="
 line_bot_api= LineBotApi(os.environ.get("LINE_CHANNEL_ACCESS_TOKEN"))
 def webhook_parser(webhook):
     event = webhook["events"][0]
