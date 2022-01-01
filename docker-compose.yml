@@ -1,0 +1,13 @@
+version: '3'
+services:
+  linebot:
+    image: toc:slim
+    container_name: linebot
+    restart: always
+    environment: 
+        - LINE_CHANNEL_ACCESS_TOKEN
+        - LINE_CHANNEL_SECRET
+        - FLASK_ENV
+        - SECRET_KEY
+    ports:
+        - "5000:5000"

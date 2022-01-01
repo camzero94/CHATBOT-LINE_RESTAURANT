@@ -91,7 +91,7 @@ class LineAPI:
     def sendImageWithURL(reply_token, url:str):
         message = ImageSendMessage(url,url)
         LineAPI.addMessage(reply_token, message)
-
+    # @staticmethod
     # def send_fsm_graph(self, reply_token):
     #     try:
     #         # for demo, hard coded image url, line api only support image over https

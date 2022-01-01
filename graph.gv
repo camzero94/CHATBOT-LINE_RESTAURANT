@@ -1,0 +1,50 @@
+digraph "State Machine" {
+	graph [color=black directed=true fillcolor=white label="State Machine" rankdir=LR "strict"=false style=solid]
+	node [color=black fillcolor=white peripheries=1 shape=rectangle style="rounded, filled"]
+	edge [color=black]
+	main [label=main color=red fillcolor=darksalmon peripheries=2]
+	menu [label=menu]
+	main_dishes[label=main_dishes]
+	drink[label=drink]
+	show_order[label=show_order]
+	set_order[label=set_order]
+	register[label=register]
+	get_phone [label=get_phone]
+	confirm_data [label=confirm_data]
+	check_out[label=check_out]
+	
+	main -> menu[label=menu_query]
+	menu-> main_dishes[label=main_dishes_query]
+	menu-> main [label=main]
+	menu->drink[label=dink_query]
+	menu->show_order[label=order_show_query]
+	
+	main_dishes-> menu[label=check]
+	main_dishes-> main_dishes[label="re_sample | more"]
+	main_dishes->main[label=main]
+
+	drink -> menu[label = check]
+	drink -> drink[label = "re_sample | more"]
+	drink -> main[label=main]
+
+	show_order-> set_order[label=set_order_query]
+	show_order-> menu[label=go_back]
+	show_order-> main[label=main]
+
+	set_order->register_client[label=login]
+	set_order->get_phone[label=name]
+
+
+	register_client->register_client[label=log_failed]
+	register_client->main[label=main]
+	register_client->confirm_data[label=log_success]
+	register_client->set_order[label=go_back]
+
+	get_phone-> get_phone[label=not_phone]
+	get_phone-> confirm_data[label=phone]
+	get_phone-> main[label=main]
+
+	confirm_data->check_out[label=yes]
+	confirm_data->set_order[label=no]
+	confirm_data->main][label=main]
+}

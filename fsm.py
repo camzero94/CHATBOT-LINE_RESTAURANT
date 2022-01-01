@@ -7,10 +7,12 @@ from utils import LineAPI
 import random
 
 
+FSM_GRAPH_URL = 'https://toc.c.gtco.team/graphs/fsm.png'
 class FSMchatbot(object):
     fsmDefinition = {
         "states":  [
             'main',
+            'fsm',
             'menu',
             'drink',
             'main_dishes',
@@ -142,6 +144,11 @@ class FSMchatbot(object):
                 'source':'main',
                 'dest': 'all_orders'  
             },
+            {
+                'trigger':'fsm_query',
+                'source':'*',
+                'dest':'fsm'
+            },
             
         ],
         "initial": 'main',
@@ -157,19 +164,19 @@ class FSMchatbot(object):
         self.curr_drink = []
         self.current_order = None
         self.total_price = 0
+        self.repeatedDish = False
+        self.repeatedDrink = False
 
     main_menu_text = (
         "Welcome to the chatbot for TOC\n"+
         "(Please Select any of the following options\n"+
         "-Main\n" +
-        "-Menu\n" +
-        "-My Orders\n"
+        "-Menu\n" 
     )
 
     def on_enter_main(self, reply_token):
         quick_reply = LineAPI.makeQuickReplyText([
-            'Menu',
-            'My Orders'
+            'Menu'
         ])
         LineAPI.send_reply_message(reply_token,reply_msg = FSMchatbot.main_menu_text,quickReply=quick_reply)
         LineAPI.commitMessage()
@@ -184,6 +191,15 @@ class FSMchatbot(object):
         "Saturday from 11:00 to  20:00\n"+
         "Sunday------------Close-------\n"
     )
+
+    def on_enter_fsm(self,reply_token):
+        quick_reply = LineAPI.makeQuickReplyText([
+            'Main'
+        ])
+        LineAPI.sendImageWithURL(reply_token,FSM_GRAPH_URL)
+        # LineAPI.send_fsm_graph(reply_token)
+        LineAPI.commitMessage()
+
 
     def on_enter_menu(self,reply_token):
         quick_reply = LineAPI.makeQuickReplyText([
@@ -223,6 +239,10 @@ class FSMchatbot(object):
             'Main'
             
         ])
+        if self.repeatedDish == True:
+            LineAPI.send_reply_message(reply_token,reply_msg="Sorry right now only can order \n " +
+                                        "one main dish per order\n"+
+                                        "If you want to change order you have to go back to main")
         LineAPI.send_reply_message(
             reply_token, reply_msg="Are you Hungry?", quickReply=quick_reply)
         LineAPI.commitMessage()
@@ -249,6 +269,10 @@ class FSMchatbot(object):
             'Check',
             'Main'
         ])
+        if self.repeatedDrink == True:
+            LineAPI.send_reply_message(reply_token,reply_msg="Sorry right now only can order \n " +
+                                        "one main drink per order\n"+
+                                        "If you want to change order you have to go back to main")
         LineAPI.send_reply_message(
             reply_token, reply_msg="Are you Hungry?", quickReply=quick_reply)
         LineAPI.commitMessage()

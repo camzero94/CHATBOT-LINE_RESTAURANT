@@ -3,6 +3,7 @@ import os
 import sys
 
 from flask import Flask, jsonify, request, abort, send_file
+from flask.helpers import send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from linebot import webhook
 from linebot.models import messages
@@ -20,7 +21,6 @@ app = Flask(__name__, static_url_path="")
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', '7f6g7t6sadwerFjlskdfjlskadflksjf')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy(app)
-
 #Database Declaration
 
 class User (db.Model):
@@ -105,12 +105,17 @@ userText_to_trigger = {
     "set order": "set_query",
     "log in": "login",
     "go back":"go_back",
-    "go back to menu": "back_to_menu"
+    "go back to menu": "back_to_menu",
+    "fsm":"fsm_query"
 
 }
 @app.route('/',methods = ['GET'])
 def show ():
     return "Hello "
+
+@app.route('/graphs/<path:path>')
+def graph(path):
+    return send_from_directory('graphs',path)
 
 @app.route('/',methods=['POST'])
 def recieve():
@@ -130,6 +135,8 @@ def recieve():
         machines[user_id].curr_main = None
         machines[user_id].curr_drink = None
         machines[user_id].total_price = 0
+        machines[user_id].repeatedDish = False
+        machines[user_id].repeatedDrink= False
 
     if machines[user_id].state == 'set_order':
         if message != 'Log In':
@@ -140,7 +147,7 @@ def recieve():
     
     if machines[user_id].state == 'main_dishes' or machines[user_id].state == 'drink': 
          
-        if 'SET_MAIN' in message :
+        if 'SET_MAIN' in message and not machines[user_id].repeatedDish:
             from app import MainDish 
             machines[user_id].curr_main = MainDish.query.get(int(message.split()[1]))
             machines[user_id].total_price += int(message.split()[2])
@@ -152,10 +159,10 @@ def recieve():
             #     drink_id = 0,
             #     user_id = user.id if user else 0 
             # ))
+            machines[user_id].repeatedDish = True
             message = 'more food'
             # print (machines[user_id].main_order)
-       
-        if 'SET_DRINK' in message:
+        if 'SET_DRINK' in message and not machines[user_id].repeatedDrink:
             from app import Drink 
             machines[user_id].curr_drink = Drink.query.get(int(message.split()[1]))
             machines[user_id].total_price += int(message.split()[2])
@@ -168,6 +175,7 @@ def recieve():
             #     drink_id = int(message.split()[1]),
             #     user_id = user.id if user else 0 
             # ))
+            machines[user_id].repeatedDrink= True
             message = 'more drinks'
         
 
