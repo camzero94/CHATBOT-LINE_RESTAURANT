@@ -106,7 +106,8 @@ userText_to_trigger = {
     "log in": "login",
     "go back":"go_back",
     "go back to menu": "back_to_menu",
-    "fsm":"fsm_query"
+    "fsm":"fsm_query",
+    "test":"test_query"
 
 }
 @app.route('/',methods = ['GET'])

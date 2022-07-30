@@ -25,7 +25,8 @@ class FSMchatbot(object):
             'query_orders',
             'not_user', 
             'order_show',
-            'all_orders'
+            'all_orders',
+            'test'
         ],
 
         "transitions":[
@@ -33,6 +34,11 @@ class FSMchatbot(object):
                 'trigger': 'menu_query',
                 'source':'main',
                 'dest':'menu'
+            },
+            {
+                'trigger': 'test_query',
+                'source':'*',
+                'dest':'test'
             },
             {
                 'trigger': 'drink_query',
@@ -246,12 +252,19 @@ class FSMchatbot(object):
         LineAPI.send_reply_message(
             reply_token, reply_msg="Are you Hungry?", quickReply=quick_reply)
         LineAPI.commitMessage()
+    def on_enter_test(self,reply_token):        
     
+        LineAPI.send_reply_message(
+            reply_token, reply_msg="New State")
+        LineAPI.commitMessage()
+
+
     def on_enter_drink(self, reply_token):
         from app import Drink 
 
         LineAPI.send_reply_message(
             reply_token, reply_msg="There are some of our Main Dishes:")
+        LineAPI.commitMessage()
         
         #Send 5 Carousel of 5 random Main Dishes:
         drinks= Drink.query.all()

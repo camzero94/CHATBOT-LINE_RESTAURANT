@@ -37,7 +37,8 @@ pipenv shell
 
 
 #### Run the sever
-If you want to use it as a server it is already been deploy at https://toc.c.gtco.team/
+If you want to use it  here is the QR code !!
+![CHATBOT](368iripl.png)
 
 
 ## Author
